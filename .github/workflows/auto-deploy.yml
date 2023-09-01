@@ -1,0 +1,24 @@
+name: Netlify Deploy
+
+on:
+  push:
+    branches:
+      - main # 변경하려는 브랜치로 설정
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build and Deploy to Netlify
+        run: |
+          # Netlify 빌드 후크 URL
+          NETLIFY_WEBHOOK_URL="https://api.netlify.com/build_hooks/64f1a1957069f63d64a28d53"
+          
+          # Netlify 빌드 후크를 사용하여 Netlify에 배포
+          curl -X POST -d '{}' $NETLIFY_WEBHOOK_URL
+        env:
+          NETLIFY_WEBHOOK_URL: ${{ secrets.NETLIFY_WEBHOOK_URL }}
