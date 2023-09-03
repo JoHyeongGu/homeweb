@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: '형구의 Home페이지',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
@@ -28,31 +28,67 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Color? background;
+
+  @override
+  void initState() {
+    background = Colors.green;
+    print('color');
+    super.initState();
+  }
+
+  Widget _text(String text, double size) {
+    return Text(
+      text,
+      style: TextStyle(color: Colors.white, fontSize: size),
+    );
+  }
+
+  Widget menuList(List menu) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: menu
+          .map((e) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: TextButton(
+                  onPressed: () {
+                    print(e['title']);
+                  },
+                  onHover: (state){
+                    setState(() {
+                      if (state){
+                        background = e['color'];
+                      } else{
+                        background = Colors.green;
+                      }
+                    });
+                  },
+                  child: _text(e['title'], 15),
+                ),
+              ))
+          .toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            color: Colors.lightGreen,
+      body: Container(
+        color: background,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _text('Title Page', 60),
+              const SizedBox(height: 10),
+              menuList([
+                {'title': 'menu1', 'color': Colors.redAccent},
+                {'title': 'menu2', 'color': Colors.blue},
+                {'title': 'menu3', 'color': Colors.yellow},
+              ]),
+            ],
           ),
-          const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '형구의 테스트 웹 호스팅',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 30),
-                Image(image: AssetImage('asset/panda.png')),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
