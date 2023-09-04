@@ -1,6 +1,10 @@
 // ignore_for_file: must_be_immutable, void_checks
 
 import 'package:flutter/material.dart';
+import 'package:homeweb/profile_page.dart';
+import 'package:homeweb/study_page.dart';
+import 'package:homeweb/title_page.dart';
+import 'package:homeweb/works_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,121 +34,47 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String backgroundImg = "asset/earth.gif";
+  bool detailVisible = false;
+  String? detailContent;
 
-  void changingBackgroundImage(String? image) {
-    if (image != null) {
-      backgroundImg = image;
-    } else {
-      backgroundImg = "asset/earth.gif";
-    }
-    setState(() {});
+  void enterDetailPage({String? title}) {
+    setState(() {
+      detailVisible = !(title == null);
+      detailContent = title;
+    });
   }
 
-  Widget menuList(List menu) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: menu
-          .map((e) => MenuButton(
-                data: e,
-                changingBackgroundImage: changingBackgroundImage,
-              ))
-          .toList(),
-    );
+  Widget detailPage(String? detailTitle) {
+    List<double> deviceSize = [MediaQuery.of(context).size.width, MediaQuery.of(context).size.height];
+    List<double> paddingSize = [300, 50];
+    const Map<String, Widget> content = {
+      'profile': ProfilePage(),
+      'works': WorksPage(),
+      'study': StudyPage(),
+    };
+    return AnimatedPositioned(
+        duration: const Duration(milliseconds: 200),
+        left: paddingSize[0] / 2,
+        bottom: detailVisible ? 0 : -(deviceSize[1] - paddingSize[1]),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          color: const Color.fromRGBO(255, 254, 233, 1.0),
+          height: deviceSize[1] - paddingSize[1],
+          width: deviceSize[0] - paddingSize[0],
+          child: content[detailTitle],
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: Image.asset(
-              backgroundImg,
-              key: ValueKey<String>(backgroundImg),
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
-          Container(color: const Color.fromRGBO(1, 1, 1, 0.5)),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                menuText("나만의 구, 페이지", title: true),
-                menuList([
-                  {'title': 'profile', 'image': 'asset/hello.gif'},
-                  {'title': 'works', 'image': 'asset/work.gif'},
-                  {'title': 'study', 'image': 'asset/study.gif'},
-                ]),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-Widget menuText(String text, {bool title = false, bool focus = false}) {
-  return Text(
-    text,
-    style: TextStyle(
-        color: Colors.white,
-        fontSize: title
-            ? 60
-            : focus
-                ? 23
-                : 20,
-        fontWeight: title ? FontWeight.bold : FontWeight.normal,
-        fontFamily: 'supermagic'),
-  );
-}
-
-class MenuButton extends StatefulWidget {
-  Map data;
-  Function changingBackgroundImage;
-  MenuButton(
-      {super.key, required this.data, required this.changingBackgroundImage});
-
-  @override
-  State<MenuButton> createState() => _MenuButtonState();
-}
-
-class _MenuButtonState extends State<MenuButton> {
-  bool _focus = false;
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 95,
-      child: TextButton(
-        onPressed: () {
-          print(widget.data['title']);
-        },
-        onHover: (state) {
-          setState(() {
-            _focus = state;
-          });
-          if (state) {
-            widget.changingBackgroundImage(widget.data['image']);
-          } else {
-            widget.changingBackgroundImage(null);
-          }
-        },
-        onFocusChange: (state) {
-          setState(() {
-            _focus = state;
-          });
-          if (state) {
-            widget.changingBackgroundImage(widget.data['image']);
-          } else {
-            widget.changingBackgroundImage(null);
-          }
-        },
-        child: menuText(widget.data['title'], focus: _focus),
-      ),
-    );
+        body: Stack(
+      children: [
+        TitlePage(
+          enterDetailPage: enterDetailPage,
+        ),
+        detailPage(detailContent),
+      ],
+    ));
   }
 }
