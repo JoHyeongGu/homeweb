@@ -10,6 +10,18 @@ class StudyPage extends StatefulWidget {
 class _StudyPageState extends State<StudyPage> {
   @override
   Widget build(BuildContext context) {
-    return Text('study');
+    return Column(
+      children: [
+        const Image(image: AssetImage('asset/study.gif')),
+        const SizedBox(height: 30),
+        const Text(
+          '공부 페이지',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'supermagic',
+          ),
+        ),
+      ].map((e) => Flexible(child: e)).toList(),
+    );
   }
 }

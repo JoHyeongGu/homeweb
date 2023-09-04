@@ -1,26 +1,17 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-
-Widget menuText(String text, {bool title = false, bool focus = false}) {
-  return Text(
-    text,
-    style: TextStyle(
-        color: Colors.white,
-        fontSize: title
-            ? 60
-            : focus
-                ? 23
-                : 20,
-        fontWeight: title ? FontWeight.bold : FontWeight.normal,
-        fontFamily: 'supermagic'),
-  );
-}
 
 class TitlePage extends StatefulWidget {
   Function enterDetailPage;
   String? detailContent;
-  TitlePage({Key? key, required this.enterDetailPage, this.detailContent})
+  bool smallWeb;
+  TitlePage(
+      {Key? key,
+      required this.enterDetailPage,
+      this.detailContent,
+      required this.smallWeb})
       : super(key: key);
 
   @override
@@ -40,15 +31,23 @@ class _TitlePageState extends State<TitlePage> {
   }
 
   Widget menuList(List menu) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: menu
-          .map((e) => MenuButton(
-              data: e,
-              changingBackgroundImage: changingBackgroundImage,
-              enterDetailPage: widget.enterDetailPage))
-          .toList(),
-    );
+    List<Widget> items = menu
+        .map((e) => Flexible(
+              child: MenuButton(
+                  data: e,
+                  changingBackgroundImage: changingBackgroundImage,
+                  enterDetailPage: widget.enterDetailPage),
+            ))
+        .toList();
+    return widget.smallWeb
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: items,
+          )
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: items,
+          );
   }
 
   @override
@@ -75,19 +74,44 @@ class _TitlePageState extends State<TitlePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              menuText("인생의 구, 페이지", title: true),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: menuText("인생의 구, 페이지", title: true),
+              ),
               const SizedBox(height: 30),
-              menuList([
-                {'title': 'profile', 'image': 'asset/hello.gif'},
-                {'title': 'works', 'image': 'asset/work.gif'},
-                {'title': 'study', 'image': 'asset/study.gif'},
-              ]),
-            ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: menuList(
+                  [
+                    {'title': 'profile', 'image': 'asset/hello.gif'},
+                    {'title': 'works', 'image': 'asset/work.gif'},
+                    {'title': 'study', 'image': 'asset/study.gif'},
+                  ],
+                ),
+              ),
+            ].map((e) => Flexible(child: e)).toList(),
           ),
         ),
       ],
     );
   }
+}
+
+Widget menuText(String text, {bool title = false, bool focus = false}) {
+  return AutoSizeText(
+    text,
+    style: TextStyle(
+      color: Colors.white,
+      fontSize: title
+          ? 100
+          : focus
+              ? 23
+              : 20,
+      fontWeight: title ? FontWeight.bold : FontWeight.normal,
+      fontFamily: 'supermagic',
+    ),
+    maxLines: 1,
+  );
 }
 
 class MenuButton extends StatefulWidget {
@@ -112,9 +136,15 @@ class _MenuButtonState extends State<MenuButton> {
       width: 95,
       child: GestureDetector(
         onTapDown: (TapDownDetails details) {
+          setState(() {
+            _focus = true;
+          });
           widget.changingBackgroundImage(widget.data['image']);
         },
         onTapCancel: () {
+          setState(() {
+            _focus = false;
+          });
           widget.changingBackgroundImage(null);
         },
         child: TextButton(
