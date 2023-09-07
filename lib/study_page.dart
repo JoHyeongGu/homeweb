@@ -21,7 +21,7 @@ class _StudyPageState extends State<StudyPage> {
             fontFamily: 'supermagic',
           ),
         ),
-      ].map((e) => Flexible(child: e)).toList(),
+      ].toList(),
     );
   }
 }

@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 
 class TitlePage extends StatefulWidget {
   Function enterDetailPage;
+  List<Map> menuList;
   String? detailContent;
   bool smallWeb;
   TitlePage(
       {Key? key,
       required this.enterDetailPage,
+      required this.menuList,
       this.detailContent,
       required this.smallWeb})
       : super(key: key);
@@ -34,15 +36,20 @@ class _TitlePageState extends State<TitlePage> {
     List<Widget> items = menu
         .map((e) => Flexible(
               child: MenuButton(
-                  data: e,
-                  changingBackgroundImage: changingBackgroundImage,
-                  enterDetailPage: widget.enterDetailPage),
+                data: e,
+                changingBackgroundImage: changingBackgroundImage,
+                enterDetailPage: widget.enterDetailPage,
+                smallWeb: widget.smallWeb,
+              ),
             ))
         .toList();
     return widget.smallWeb
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: items,
+        ? SizedBox(
+            height: 150,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: items,
+            ),
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -103,7 +110,7 @@ Widget menuText(String text, {bool title = false, bool focus = false}) {
     style: TextStyle(
       color: Colors.white,
       fontSize: title
-          ? 100
+          ? 80
           : focus
               ? 23
               : 20,
@@ -116,13 +123,16 @@ Widget menuText(String text, {bool title = false, bool focus = false}) {
 
 class MenuButton extends StatefulWidget {
   Map data;
+  bool smallWeb;
   Function changingBackgroundImage;
   Function enterDetailPage;
-  MenuButton(
-      {super.key,
-      required this.data,
-      required this.changingBackgroundImage,
-      required this.enterDetailPage});
+  MenuButton({
+    super.key,
+    required this.data,
+    required this.changingBackgroundImage,
+    required this.enterDetailPage,
+    required this.smallWeb,
+  });
 
   @override
   State<MenuButton> createState() => _MenuButtonState();
@@ -134,6 +144,7 @@ class _MenuButtonState extends State<MenuButton> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 95,
+      height: widget.smallWeb ? 500 : 30,
       child: GestureDetector(
         onTapDown: (TapDownDetails details) {
           setState(() {

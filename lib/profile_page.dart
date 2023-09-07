@@ -21,7 +21,61 @@ class _ProfilePageState extends State<ProfilePage> {
             fontFamily: 'supermagic',
           ),
         ),
-      ].map((e) => Flexible(child: e)).toList(),
+        const Image(image: AssetImage('asset/hello.gif')),
+        const SizedBox(height: 30),
+        const Text(
+          '프로필 페이지',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'supermagic',
+          ),
+        ),
+        const Image(image: AssetImage('asset/hello.gif')),
+        const SizedBox(height: 30),
+        const Text(
+          '프로필 페이지',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'supermagic',
+          ),
+        ),
+        const Image(image: AssetImage('asset/hello.gif')),
+        const SizedBox(height: 30),
+        const Text(
+          '프로필 페이지',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'supermagic',
+          ),
+        ),
+        const Image(image: AssetImage('asset/hello.gif')),
+        const SizedBox(height: 30),
+        const Text(
+          '프로필 페이지',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'supermagic',
+          ),
+        ),
+        const Image(image: AssetImage('asset/hello.gif')),
+        const SizedBox(height: 30),
+        const Text(
+          '프로필 페이지',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'supermagic',
+          ),
+        ),
+        const Image(image: AssetImage('asset/hello.gif')),
+        const SizedBox(height: 30),
+        const Text(
+          '프로필 페이지',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'supermagic',
+          ),
+        ),
+      ].toList(),
     );
   }
 }
