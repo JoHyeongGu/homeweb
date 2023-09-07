@@ -21,7 +21,7 @@ class _WorksPageState extends State<WorksPage> {
             fontFamily: 'supermagic',
           ),
         ),
-      ].map((e) => Flexible(child: e)).toList(),
+      ].toList(),
     );
   }
 }

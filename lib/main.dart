@@ -1,11 +1,12 @@
 // ignore_for_file: must_be_immutable, void_checks
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:homeweb/profile_page.dart';
 import 'package:homeweb/study_page.dart';
 import 'package:homeweb/title_page.dart';
 import 'package:homeweb/works_page.dart';
-import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '구페이지',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
       home: MyHomePage(deviceSize: deviceSize, smallWeb: smallWeb),
@@ -47,22 +48,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void enterDetailPage({String? title}) {
     setState(() {
-      detailVisible = !(title == null);
-      if (!detailVisible) {
-        Timer(const Duration(seconds: 2), () => detailContent = title);
+      if (title == null){
+        Future.delayed(const Duration(milliseconds: 200), () {
+          detailContent = title;
+        });
       } else {
         detailContent = title;
       }
+      detailVisible = !(title == null);
     });
   }
 
   Widget detailPage(String? detailTitle) {
+    if(!detailVisible && detailTitle == null){
+      return SizedBox();
+    }
     List<double> paddingSize = [300, widget.smallWeb ? 0 : 50];
-    const Map<String, Widget> content = {
-      'profile': ProfilePage(),
-      'works': WorksPage(),
-      'study': StudyPage(),
-    };
+    Widget content = detailTitle != null ? {
+      'profile': const ProfilePage(),
+      'works': const WorksPage(),
+      'study': const StudyPage(),
+    }[detailTitle]! : const SizedBox();
     return AnimatedPositioned(
         duration: const Duration(milliseconds: 200),
         left: widget.smallWeb ? 0 : paddingSize[0] / 2 / 2,
@@ -73,25 +79,23 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            widget.smallWeb || detailTitle == null
+            widget.smallWeb
                 ? Container()
                 : SideMenu(
                     width: paddingSize[0] / 2 / 2,
                     selectedTitle: detailTitle,
                     enterDetailPage: enterDetailPage,
                   ),
-            GestureDetector(
-              onVerticalDragDown: (DragDownDetails detail){
-                enterDetailPage();
-              },
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                color: const Color.fromRGBO(255, 254, 233, 1.0),
-                height: widget.deviceSize['height'] - paddingSize[1],
-                width: widget.smallWeb
-                    ? widget.deviceSize['width']
-                    : widget.deviceSize['width'] - paddingSize[0],
-                child: content[detailTitle],
+            Container(
+              padding: const EdgeInsets.all(20),
+              color: const Color.fromRGBO(255, 254, 233, 1.0),
+              height: widget.deviceSize['height'] - paddingSize[1],
+              width: widget.smallWeb
+                  ? widget.deviceSize['width']
+                  : widget.deviceSize['width'] - paddingSize[0],
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: content,
               ),
             ),
           ],
@@ -115,13 +119,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class SideMenu extends StatefulWidget {
   double width;
-  String selectedTitle;
   Function enterDetailPage;
+  String? selectedTitle;
   SideMenu({
     Key? key,
     required this.width,
-    required this.selectedTitle,
     required this.enterDetailPage,
+    this.selectedTitle,
   }) : super(key: key);
 
   @override
